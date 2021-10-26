@@ -1,0 +1,29 @@
+{
+  "name": "velas-account-sponsor",
+  "version": "1.0.0",
+  "description": "backend for sponsoring transactions",
+  "main": "index.js",
+  "dependencies": {
+    "@velas/web3": "0.1.5",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "body-parser": "^1.19.0",
+    "bs58": "^4.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^6.2.0",
+    "express": "^4.17.1",
+    "nanoid": "^3.1.30",
+    "node-fetch": "^2.6.1",
+    "nodemon": "^1.18.4"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/nodemon --watch src --exec babel-node -- src/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
