@@ -25,4 +25,4 @@ class CSRF {
     };
 };
 
-export default CSRF;
+export default new CSRF();
