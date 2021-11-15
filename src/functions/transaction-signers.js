@@ -52,6 +52,14 @@ const transactionSetSigners = (transaction, n) => {
                 instruction.keys[5].isSigner = true;
                 break;
 
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${11}`: // VelasAccountProgram transfer
+                instruction.keys[5].isSigner = true;
+                break;
+
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${10}`: // VelasAccountProgram transfer
+                instruction.keys[4].isSigner = true;
+                break;
+
             default:
                 throw new Error(`Instruction ${instructionProgrammAddress}:${instructionNumber} is not supported by sponsor.`);
         };  
