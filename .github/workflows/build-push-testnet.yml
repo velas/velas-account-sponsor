@@ -20,12 +20,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Add .env
-        id: deploy
-        env:
-          BUILD_ENV: ${{ secrets.BUILD_ENV_TESTNET }}
-        run: |
-          echo $BUILD_ENV|base64 -d > .env
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
