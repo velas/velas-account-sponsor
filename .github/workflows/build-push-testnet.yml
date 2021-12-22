@@ -74,6 +74,5 @@ jobs:
           cd deploy
           account_id=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .accountId)
           ECR_REGISTRY=${account_id}.dkr.ecr.${ECR_REGION}.amazonaws.com
-          helm plugin install https://github.com/jkroepke/helm-secrets --version v3.11.0
           helmfile -e prod -l namespace=testnet,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG,image.repository=$ECR_REGISTRY/$ECR_REPOSITORY --skip-deps
 
