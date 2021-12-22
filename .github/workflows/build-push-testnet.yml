@@ -62,6 +62,8 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBE_CONFIG_DATA_AWS_RAW }}
           context: "eks_prod-prod"
+      - name: Sops Binary Installer
+        uses: mdgreenwald/mozilla-sops-action@v1.1.0
       - name: Deploy via helmfile
         id: deploy
         env:
