@@ -68,6 +68,7 @@ jobs:
           IMAGE_TAG: ${{ needs.docker-build.outputs.image_tag }}
           ECR_REGION: ${{ secrets.AWS_REGION }}
         run: |
+          helm plugin install https://github.com/jkroepke/helm-secrets --version v3.11.0 || true
           helm plugin install https://github.com/databus23/helm-diff || true
           cd deploy
           account_id=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .accountId)
