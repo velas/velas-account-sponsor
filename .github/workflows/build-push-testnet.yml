@@ -39,7 +39,7 @@ jobs:
     runs-on: deployer
     needs: docker-build
     container:
-      image: cablespaghetti/helmfile-docker:3.5.4
+      image: quay.io/roboll/helmfile:v0.142.0
     steps:
       - name: Configure AWS credentials
         id: checkout
@@ -48,15 +48,11 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      - name: Setup helmfile
-        uses: mamezou-tech/setup-helmfile@v0.9.0
-        with:
-          helmfile-version: "v0.142.0"
       - name: Check out velas-infra
         uses: actions/checkout@master
         with:
           repository: velas/velas-infra
-          ssh-key: ${{ secrets.INFRA_SSH_KEY }}
+          token: ${{ secrets.INFRA_PULL_TOKEN }}
       - uses: azure/k8s-set-context@v2
         with:
           method: kubeconfig
@@ -64,6 +60,7 @@ jobs:
           context: "eks_prod-prod"
       - name: Sops Binary Installer
         uses: mdgreenwald/mozilla-sops-action@v1.1.0
+      - uses: prepor/action-aws-iam-authenticator@master
       - name: Deploy via helmfile
         id: deploy
         env:
@@ -71,6 +68,7 @@ jobs:
           IMAGE_TAG: ${{ needs.docker-build.outputs.image_tag }}
           ECR_REGION: ${{ secrets.AWS_REGION }}
         run: |
+          helm plugin install https://github.com/databus23/helm-diff || true
           cd deploy
           account_id=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .accountId)
           ECR_REGISTRY=${account_id}.dkr.ecr.${ECR_REGION}.amazonaws.com
