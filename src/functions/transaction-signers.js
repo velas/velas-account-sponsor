@@ -60,7 +60,7 @@ const transactionSetSigners = (transaction, n) => {
                 instruction.keys[4].isSigner = true;
                 break;
 
-            case `GW5kcMNyviBQkU8hxPBSYY2BfAhXbkAraEZsMRLE36ak:${98}`: // Memo instruction
+            case `GW5kcMNyviBQkU8hxPBSYY2BfAhXbkAraEZsMRLE36ak:${101}`: // Memo instruction
                 break;
 
             default:
