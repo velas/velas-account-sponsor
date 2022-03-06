@@ -10,7 +10,7 @@ dotenv.config();
 const connection     = getConnection();
 const sponsorAccount = getSponsorAccount();
 
-const transactionsHendler = async ( transactions, csrf_token) => {
+const transactionsHendler = async ( transactions, csrf_token, ip) => {
     let transactions_length     = transactions.length;
     let transactions_sent       = 0;
     let transactions_signatures = [];
@@ -20,7 +20,7 @@ const transactionsHendler = async ( transactions, csrf_token) => {
 
         console.log('\x1b[44m%s\x1b[0m', `[ START BROADCASTING ] ${n}`);
         
-        csrf.verify(csrf_token);
+        csrf.verify(csrf_token, ip);
 
         if (!Array.isArray(signatures)) throw new Error(`signatures param of transaction ${n} should be array`);
 

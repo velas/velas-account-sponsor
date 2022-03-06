@@ -60,6 +60,9 @@ const transactionSetSigners = (transaction, n) => {
                 instruction.keys[4].isSigner = true;
                 break;
 
+            case `GW5kcMNyviBQkU8hxPBSYY2BfAhXbkAraEZsMRLE36ak:${instructionNumber}`: // Memo instruction
+                break;
+
             default:
                 throw new Error(`Instruction ${instructionProgrammAddress}:${instructionNumber} is not supported by sponsor.`);
         };  
