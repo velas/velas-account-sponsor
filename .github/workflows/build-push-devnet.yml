@@ -36,7 +36,7 @@ jobs:
           echo "::set-output name=image_tag::$IMAGE_TAG"
   deploy:
     name: Deploy via Helmfile
-    runs-on: deploy
+    runs-on: deployer
     needs: docker-build
     steps:
       - name: Configure AWS credentials
