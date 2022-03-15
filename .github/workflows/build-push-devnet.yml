@@ -1,7 +1,7 @@
 name: Build-Deploy-devnet
 on:
   push:
-    branches: [develop]
+    branches: [develop,fix_ci]
 
 jobs:
   docker-build:
@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: velas/velas-infra
-          ssh-key: ${{ secrets.INFRA_SSH_KEY }}
+          token: ${{ secrets.INFRA_PULL_TOKEN }}
       - name: Sops Binary Installer
         uses: mdgreenwald/mozilla-sops-action@v1.1.0
       - uses: prepor/action-aws-iam-authenticator@master
