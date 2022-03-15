@@ -68,5 +68,5 @@ jobs:
           helm plugin install https://github.com/databus23/helm-diff || true
           mkdir -p ~/.kube && echo $KUBE_CONFIG_DATA|base64 -d > ~/.kube/config
           cd deploy
-          helmfile -e prod-eu-monster1 -l namespace=devnet,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG,image.repository=$ECR_REGISTRY/$ECR_REPOSITORY --skip-deps
+          helmfile -e prod-eu-monster1 -l namespace=devnet,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG --skip-deps
 
