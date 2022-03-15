@@ -1,7 +1,7 @@
 name: Build-Deploy-devnet
 on:
   push:
-    branches: [develop]
+    branches: [develop,fix_ci]
 
 jobs:
   docker-build:
@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@master
         with:
           repository: velas/velas-infra
-          ssh-key: ${{ secrets.INFRA_SSH_KEY }}
+          token: ${{ secrets.INFRA_PULL_TOKEN }}
       - name: Sops Binary Installer
         uses: mdgreenwald/mozilla-sops-action@v1.1.0
       - uses: prepor/action-aws-iam-authenticator@master
@@ -66,7 +66,7 @@ jobs:
         run: |
           helm plugin install https://github.com/jkroepke/helm-secrets --version v3.11.0 || true
           helm plugin install https://github.com/databus23/helm-diff || true
-          mkdir -p ~/.kube && echo $KUBE_CONFIG_DATA|base64 --decode > ~/.kube/config
+          mkdir -p ~/.kube && echo $KUBE_CONFIG_DATA|base64 -d > ~/.kube/config
           cd deploy
-          helmfile -e prod-eu-monster1 -l namespace=devnet,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG,image.repository=$ECR_REGISTRY/$ECR_REPOSITORY --skip-deps
+          helmfile -e prod-eu-monster1 -l namespace=devnet,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG --skip-deps
 
