@@ -1,7 +1,7 @@
-name: Build-Deploy-devnet
+name: Build-Deploy-mainnet
 on:
   push:
-    branches: [develop,fix_ci]
+    branches: [master]
 
 jobs:
   docker-build:
@@ -53,20 +53,25 @@ jobs:
         with:
           repository: velas/velas-infra
           token: ${{ secrets.INFRA_PULL_TOKEN }}
+      - uses: azure/k8s-set-context@v2
+        with:
+          method: kubeconfig
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA_AWS_RAW }}
+          context: "eks_prod-prod"
       - name: Sops Binary Installer
         uses: mdgreenwald/mozilla-sops-action@v1.1.0
       - uses: prepor/action-aws-iam-authenticator@master
       - name: Deploy via helmfile
         id: deploy
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ needs.docker-build.outputs.repository }}
           IMAGE_TAG: ${{ needs.docker-build.outputs.image_tag }}
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
+          ECR_REGION: ${{ secrets.AWS_REGION }}
         run: |
           helm plugin install https://github.com/jkroepke/helm-secrets --version v3.11.0 || true
           helm plugin install https://github.com/databus23/helm-diff || true
-          mkdir -p ~/.kube && echo $KUBE_CONFIG_DATA|base64 -d > ~/.kube/config
           cd deploy
-          helmfile -e prod-eu-monster1 -l namespace=devnet,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG --skip-deps
+          account_id=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .accountId)
+          ECR_REGISTRY=${account_id}.dkr.ecr.${ECR_REGION}.amazonaws.com
+          helmfile -e prod -l namespace=default,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG,image.repository=$ECR_REGISTRY/$ECR_REPOSITORY --skip-deps
 
