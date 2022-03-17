@@ -1,7 +1,7 @@
-name: Build-Deploy-testnet
+name: Build-Deploy-mainnet
 on:
   push:
-    branches: [master,master_ci]
+    branches: [master]
 
 jobs:
   docker-build:
