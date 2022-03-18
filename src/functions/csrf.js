@@ -55,7 +55,7 @@ class CSRF {
 
         this.ips[ip].push(new Date());
 
-        delete this.storage[token];
+        //delete this.storage[token]; TO DO: delete after N transactions; 
 
         console.log('\x1b[33m%s\x1b[0m', `[ CSRF VERIFIED ]`, token);
     };
