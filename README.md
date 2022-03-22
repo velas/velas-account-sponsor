@@ -1,7 +1,7 @@
 # Getting Started with Velas Account Sponsor App
 
-## SET .env
-
+## .env
+ 
 ```js
 SPONSOR_PRIVATE=""
 NETWORK_HOST="https://api.devnet.velas.com"
