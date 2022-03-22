@@ -3,7 +3,7 @@
 ## .env
  
 ```js
-SPONSOR_PRIVATE=""
+SPONSOR_PRIVATE="" // private key with VLX balance 
 NETWORK_HOST="https://api.devnet.velas.com"
 VELAS_ACCOUNT_PROGRAM_ADDRESS="VAcccHVjpknkW5N5R9sfRppQxYJrJYVV7QJGKchkQj5"
 ```
