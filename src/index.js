@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 
 import { getSponsorAccount, getConnection, csrf } from './functions';
-import { transactionsHendler } from './hendlers';
+import { transactionsHendler, historyHendler } from './hendlers';
 
 dotenv.config();
 
@@ -76,6 +76,10 @@ app.post('/broadcast', async (request, response) => {
         console.log('\x1b[41m%s\x1b[0m', `[ ERROR ]`, error.message);
         response.send({ error: error.message });
     };
+});
+
+app.get('/history', async (request, response) => {
+    response.send({ history: historyHendler() });
 });
 
 app.listen(port, (err) => {

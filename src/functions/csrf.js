@@ -46,7 +46,8 @@ class CSRF {
     verify(token, ip) {
         // TO DO: verification of CSRF tokens logic
 
-        if (!this.storage[token] || this.storage[token].ip !== ip ) throw new Error('invalid CSRF token');
+        if (!this.storage[token]) throw new Error('invalid CSRF token');
+        //if (!this.storage[token] || this.storage[token].ip !== ip ) throw new Error('invalid CSRF token');
         
         this.ips[ip] = this.ips[ip] || [];
         this.ips[ip] = this.ips[ip].filter((date) => date.getDate() === new Date().getDate())
