@@ -52,6 +52,13 @@ const transactionsHendler = async ( transactions, csrf_token, ip) => {
             };
         };
 
+        console.log("[ TX INFO ]: ", 'signatures length:', transaction.signatures.length)
+
+        for (const { signature, publicKey } of transaction.signatures) {
+            console.log("[publicKey]: ", publicKey ? publicKey.toBase58() : 'none');
+            console.log("[signature]: ", signature ? signature : 'none');
+        };
+
         if (!transaction.verifySignatures()) {
             throw new Error(`No required signatures for transaction ${n}`);
         };
