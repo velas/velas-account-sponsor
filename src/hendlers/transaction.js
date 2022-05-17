@@ -1,6 +1,7 @@
 import bs58 from 'bs58';
 import * as dotenv from 'dotenv';
 import { PublicKey, sendAndConfirmRawTransaction } from '@velas/web3';
+import nacl from 'tweetnacl';
 
 import { transactionSetSigners, messageToTransaction, getSponsorAccount, getConnection, csrf } from '../functions';
 import { airdropHendler } from '../hendlers'
@@ -57,6 +58,8 @@ const transactionsHendler = async ( transactions, csrf_token, ip) => {
         for (const { signature, publicKey } of transaction.signatures) {
             console.log("[publicKey]: ", publicKey ? publicKey.toBase58() : 'none');
             console.log("[signature]: ", signature ? signature : 'none');
+
+            if (signature) console.log("[validation]: ", nacl.sign.detached.verify(transaction.serializeMessage(), signature, publicKey.toBuffer()));
         };
 
         if (!transaction.verifySignatures()) {

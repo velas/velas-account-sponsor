@@ -14,7 +14,8 @@
     "express": "^4.17.1",
     "nanoid": "^3.1.30",
     "node-fetch": "^2.6.1",
-    "nodemon": "^1.18.4"
+    "nodemon": "^1.18.4",
+    "tweetnacl": "^1.0.3"
   },
   "scripts": {
     "start": "./node_modules/.bin/nodemon --watch src --exec babel-node -- src/index.js"
