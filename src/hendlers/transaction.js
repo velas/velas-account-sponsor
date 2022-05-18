@@ -53,13 +53,17 @@ const transactionsHendler = async ( transactions, csrf_token, ip) => {
             };
         };
 
-        console.log("[ TX INFO ]: ", 'signatures length:', transaction.signatures.length)
-
         for (const { signature, publicKey } of transaction.signatures) {
-            console.log("[publicKey]: ", publicKey ? publicKey.toBase58() : 'none');
-            console.log("[signature]: ", signature ? signature : 'none');
+            if (signature) {
 
-            if (signature) console.log("[validation]: ", nacl.sign.detached.verify(transaction.serializeMessage(), signature, publicKey.toBuffer()));
+                const valid = nacl.sign.detached.verify(transaction.serializeMessage(), signature, publicKey.toBuffer())
+
+                if (!valid) {
+                    console.log('\x1b[41m%s\x1b[0m', `[ VALIDATION ]`, `invalid signature for publicKey: ${publicKey.toBase58()}`);
+                }
+            } else {
+                console.log('\x1b[41m%s\x1b[0m', `[ VALIDATION ]`, `no signature for: ${publicKey.toBase58()}`);
+            };
         };
 
         if (!transaction.verifySignatures()) {
