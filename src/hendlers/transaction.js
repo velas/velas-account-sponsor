@@ -8,10 +8,10 @@ import { airdropHendler } from '../hendlers'
 
 dotenv.config();
 
-const connection     = getConnection();
-const sponsorAccount = getSponsorAccount();
-
 const transactionsHendler = async ( transactions, csrf_token, ip) => {
+    const connection     = getConnection();
+    const sponsorAccount = getSponsorAccount();
+
     let transactions_length     = transactions.length;
     let transactions_sent       = 0;
     let transactions_signatures = [];
