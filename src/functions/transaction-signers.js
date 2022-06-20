@@ -35,6 +35,10 @@ const transactionSetSigners = (transaction, n) => {
                 instruction.keys[8].isSigner = true;
                 break;
 
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${4}`: // VelasAccountProgram mergeOperational
+                instruction.keys[6].isSigner = true;
+                break;
+
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${5}`: // VelasAccountProgram replaceOwner
                 instruction.keys[2].isSigner = true;
                 instruction.keys[3].isSigner = true;
