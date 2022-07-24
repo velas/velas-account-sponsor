@@ -3,75 +3,48 @@ on:
   push:
     branches: [testnet]
 
+env: 
+  APP_NAME: velas-account-sponsor
+  APP_REPO: account-sponsor
+ 
 jobs:
   docker-build:
-    # Name the Job
-    name: Build
-    runs-on: build
+    name: Build and push
+    runs-on:  testnet-services
     outputs:
       repository: ${{ steps.build.outputs.repository }}
       image_tag: ${{ steps.build.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v2
-      - name: Configure AWS credentials
-        id: checkout
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build, tag, and push image to AWS ECR
+      - name: Build, tag, and push image 
         id: build
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: account-sponsor
+          REGISTRY: ${{ secrets.REGISTRY_HOST }}/velas
+          REPOSITORY: ${{ env.APP_REPO }}
           IMAGE_TAG: ${{github.sha}}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=repository::$ECR_REPOSITORY"
-          echo "::set-output name=image_tag::$IMAGE_TAG"
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG --no-cache  .
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
   deploy:
     name: Deploy via Helmfile
-    runs-on: deployer
+    runs-on: testnet-services
     needs: docker-build
-    container:
-      image: quay.io/roboll/helmfile:v0.142.0
     steps:
-      - name: Configure AWS credentials
-        id: checkout
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
       - name: Check out velas-infra
         uses: actions/checkout@master
         with:
           repository: velas/velas-infra
-          token: ${{ secrets.INFRA_PULL_TOKEN }}
-      - uses: azure/k8s-set-context@v2
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.KUBE_CONFIG_DATA_AWS_RAW }}
-          context: "eks_prod-prod"
-      - name: Sops Binary Installer
-        uses: mdgreenwald/mozilla-sops-action@v1.1.0
-      - uses: prepor/action-aws-iam-authenticator@master
+          ref: master
+          ssh-key: ${{ secrets.SSH_KEY_INFRA }}
       - name: Deploy via helmfile
         id: deploy
         env:
-          ECR_REPOSITORY: ${{ needs.docker-build.outputs.repository }}
-          IMAGE_TAG: ${{ needs.docker-build.outputs.image_tag }}
-          ECR_REGION: ${{ secrets.AWS_REGION }}
+          REGISTRY: ${{ secrets.REGISTRY_HOST }}/velas
+          REPOSITORY: ${{ env.APP_REPO }}
+          IMAGE_TAG: ${{github.sha}}
+          SOPS_AGE_KEY: ${{ secrets.INFRA_AGE }}
         run: |
-          helm plugin install https://github.com/jkroepke/helm-secrets --version v3.11.0 || true
-          helm plugin install https://github.com/databus23/helm-diff || true
           cd deploy
-          account_id=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .accountId)
-          ECR_REGISTRY=${account_id}.dkr.ecr.${ECR_REGION}.amazonaws.com
-          helmfile -e prod -l namespace=testnet,name=velas-account-sponsor apply  --set image.tag=$IMAGE_TAG,image.repository=$ECR_REGISTRY/$ECR_REPOSITORY --skip-deps
+          helmfile -e ${HELM_ENV} -l namespace=${NAMESPACE},name=${{ env.APP_NAME }} apply  --set image.tag=$IMAGE_TAG,image.repository=$REGISTRY/$REPOSITORY --skip-deps
+
 
