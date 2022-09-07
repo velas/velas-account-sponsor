@@ -60,8 +60,13 @@ const transactionSetSigners = (transaction, n) => {
                 instruction.keys[5].isSigner = true;
                 break;
 
-            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${10}`: // VelasAccountProgram transfer
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${10}`: // VelasAccountProgram execute
                 instruction.keys[4].isSigner = true;
+                break;
+
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${20}`: // VelasAccountProgram SponsorAndExecute
+                instruction.keys[6].isSigner = true;
+                instruction.keys[7].isSigner = true;
                 break;
 
             case `GW5kcMNyviBQkU8hxPBSYY2BfAhXbkAraEZsMRLE36ak:${instructionNumber}`: // Memo instruction
