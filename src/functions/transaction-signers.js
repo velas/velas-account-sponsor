@@ -28,11 +28,15 @@ const transactionSetSigners = (transaction, n) => {
                 break;
 
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${18}`: // VelasAccountProgram addProgram
-                instruction.keys[7].isSigner = true;
+                instruction.keys[6].isSigner = true; //7
                 break;
 
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${2}`: // VelasAccountProgram addOperational
-                instruction.keys[8].isSigner = true;
+                instruction.keys[7].isSigner = true; //8
+                break;
+
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${4}`: // VelasAccountProgram mergeOperational
+                instruction.keys[4].isSigner = true; //6
                 break;
 
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${4}`: // VelasAccountProgram mergeOperational
@@ -49,7 +53,7 @@ const transactionSetSigners = (transaction, n) => {
                 break;
 
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${7}`: // VelasAccountProgram removeOperational
-                instruction.keys[6].isSigner = true;
+                instruction.keys[5].isSigner = true; //6
                 break;
 
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${3}`: // VelasAccountProgram extendOperationalScopes
@@ -60,8 +64,13 @@ const transactionSetSigners = (transaction, n) => {
                 instruction.keys[5].isSigner = true;
                 break;
 
-            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${10}`: // VelasAccountProgram transfer
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${10}`: // VelasAccountProgram execute
                 instruction.keys[4].isSigner = true;
+                break;
+
+            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${20}`: // VelasAccountProgram SponsorAndExecute
+                instruction.keys[6].isSigner = true;
+                instruction.keys[7].isSigner = true;
                 break;
 
             case `GW5kcMNyviBQkU8hxPBSYY2BfAhXbkAraEZsMRLE36ak:${instructionNumber}`: // Memo instruction

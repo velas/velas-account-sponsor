@@ -57,7 +57,7 @@ if (historyEvmAddresses) console.log('\x1b[32m%s\x1b[0m', `[ HISTORY ENABLED ]`,
         block = curBlock;
         history = history.slice(-10);
 
-        await new Promise(resolve=>{setTimeout(resolve,3000)})
+        await new Promise(resolve=>{setTimeout(resolve,2500)})
         
       } catch(_) {}
     }

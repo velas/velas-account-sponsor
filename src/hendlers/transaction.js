@@ -1,16 +1,17 @@
 import bs58 from 'bs58';
 import * as dotenv from 'dotenv';
 import { PublicKey, sendAndConfirmRawTransaction } from '@velas/web3';
+import nacl from 'tweetnacl';
 
 import { transactionSetSigners, messageToTransaction, getSponsorAccount, getConnection, csrf } from '../functions';
 import { airdropHendler } from '../hendlers'
 
 dotenv.config();
 
-const connection     = getConnection();
-const sponsorAccount = getSponsorAccount();
-
 const transactionsHendler = async ( transactions, csrf_token, ip) => {
+    const connection     = getConnection();
+    const sponsorAccount = getSponsorAccount();
+
     let transactions_length     = transactions.length;
     let transactions_sent       = 0;
     let transactions_signatures = [];
@@ -49,6 +50,19 @@ const transactionsHendler = async ( transactions, csrf_token, ip) => {
                 transaction.addSignature(publicKey, signature);
             } catch (error) {
                 throw new Error(`Problem with adding a signature to transaction ${n}. ${error.message}`);
+            };
+        };
+
+        for (const { signature, publicKey } of transaction.signatures) {
+            if (signature) {
+
+                const valid = nacl.sign.detached.verify(transaction.serializeMessage(), signature, publicKey.toBuffer())
+
+                if (!valid) {
+                    console.log('\x1b[41m%s\x1b[0m', `[ VALIDATION ]`, `invalid signature for publicKey: ${publicKey.toBase58()}`);
+                }
+            } else {
+                console.log('\x1b[41m%s\x1b[0m', `[ VALIDATION ]`, `no signature for: ${publicKey.toBase58()}`);
             };
         };
 
