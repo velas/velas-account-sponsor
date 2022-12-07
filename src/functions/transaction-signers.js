@@ -16,21 +16,21 @@ const transactionSetSigners = (transaction, n) => {
         };
 
         console.log('\x1b[33m%s\x1b[0m', `sponsoring instruction:`, `${instructionProgrammAddress}:${instructionNumber}`);
-
+       
         switch(`${instructionProgrammAddress}:${instructionNumber}`) {
 
             case `11111111111111111111111111111111:2`:  // SystemProgram transfer 
                 instruction.keys[0].isSigner = true;
                 break;
-
+            
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${0}`: // VelasAccountProgram initialaze
                 instruction.keys[1].isSigner = true;
                 break;
-
+            
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${18}`: // VelasAccountProgram addProgram
                 instruction.keys[6].isSigner = true; //7
                 break;
-
+            
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${2}`: // VelasAccountProgram addOperational
                 instruction.keys[7].isSigner = true; //8
                 break;
@@ -39,15 +39,11 @@ const transactionSetSigners = (transaction, n) => {
                 instruction.keys[4].isSigner = true; //6
                 break;
 
-            case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${4}`: // VelasAccountProgram mergeOperational
-                instruction.keys[6].isSigner = true;
-                break;
-
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${5}`: // VelasAccountProgram replaceOwner
                 instruction.keys[2].isSigner = true;
                 instruction.keys[3].isSigner = true;
                 break;
-
+            
             case `${process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS}:${19}`: // VelasAccountProgram removeProgramPermission
                 instruction.keys[3].isSigner = true;
                 break;
@@ -78,7 +74,7 @@ const transactionSetSigners = (transaction, n) => {
 
             default:
                 throw new Error(`Instruction ${instructionProgrammAddress}:${instructionNumber} is not supported by sponsor.`);
-        };
+        };  
     };
 
     return transaction;
