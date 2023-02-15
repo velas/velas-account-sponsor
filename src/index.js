@@ -9,7 +9,7 @@ dotenv.config();
 
 if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VELAS_ACCOUNT_PROGRAM_ADDRESS) {
     const keyPair = nacl.sign.keyPair();
-    const secret = bs58.encode (new Uint8Array(keyPair.secretKey));
+    const secret = bs58.encode(new Uint8Array(keyPair.secretKey));
 
     console.log('\x1b[41m%s\x1b[0m', `[ SERVER SETUP ]`, 'Please create and set up .env file.');
     console.log('\x1b[41m%s\x1b[0m', `[ SERVER SETUP ]`, 'To get started with testnet you can use this values: \n');
@@ -26,10 +26,14 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
 
     const RESET_SECRET = process.env.RESET_SECRET || 'password';
 
-    app.use(cors());
+    const corsOptions = {
+        origin: '*'
+    }
+    // This should already be declared in your API file
+    app.use(cors(corsOptions));
     app.options('*', cors());
-    app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(bodyParser.json());
+
+    app.use(express.json(), express.urlencoded({ extended: false }));
 
     app.use((request, response, next) => {
         request.ipaddress = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
@@ -42,7 +46,7 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
 
     app.post('/reset/limit', async (request, response) => {
 
-        if (!request.body.secret || request.body.secret !== RESET_SECRET ) {
+        if (!request.body.secret || request.body.secret !== RESET_SECRET) {
             response.status(401);
             response.send({ error: 'unauthenticated' })
             return;
@@ -61,7 +65,7 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
             return;
         };
 
-        if (!request.body.secret || request.body.secret !== RESET_SECRET ) {
+        if (!request.body.secret || request.body.secret !== RESET_SECRET) {
             response.status(401);
             response.send({ error: 'unauthenticated' })
             return;
@@ -78,13 +82,13 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
 
     app.post('/broadcast', async (request, response) => {
         try {
-            if (!request.body.csrf_token)                    throw new Error('csrf_token param is required');
+            if (!request.body.csrf_token) throw new Error('csrf_token param is required');
             if (typeof request.body.csrf_token !== 'string') throw new Error('csrf_token param is required');
-            if (!request.body.transactions)                  throw new Error('transactions param is required');
-            if (!Array.isArray(request.body.transactions))   throw new Error('transactions param should be array');
-            if (request.body.transactions.length === 0)      throw new Error('transactions param is empty');
+            if (!request.body.transactions) throw new Error('transactions param is required');
+            if (!Array.isArray(request.body.transactions)) throw new Error('transactions param should be array');
+            if (request.body.transactions.length === 0) throw new Error('transactions param is empty');
 
-            response.send(await transactionsHendler(request.body.transactions, request.body.csrf_token, request.ipaddress));         
+            response.send(await transactionsHendler(request.body.transactions, request.body.csrf_token, request.ipaddress));
         } catch (error) {
             console.log('\x1b[41m%s\x1b[0m', `[ ERROR ]`, error.message);
             response.send({ error: error.message });
@@ -100,10 +104,10 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
         console.log('\x1b[32m%s\x1b[0m', `[ SERVER STARTED  ]`, `on ${port} port`);
 
         const sponsorAccount = getSponsorAccount();
-        const connection     = getConnection();
+        const connection = getConnection();
 
-        connection.getBalance(sponsorAccount.publicKey).then((balance)=> {
-            console.log('\x1b[32m%s\x1b[0m', `[ SPONSOR BALANCE ]`, `${balance / 1000000000} VLX` );
+        connection.getBalance(sponsorAccount.publicKey).then((balance) => {
+            console.log('\x1b[32m%s\x1b[0m', `[ SPONSOR BALANCE ]`, `${balance / 1000000000} VLX`);
             if ((balance / 1000000000) < 0.05) console.log('\x1b[41m%s\x1b[0m', `[ SPONSOR BALANCE ]`, `Don't forget to fund`, '\x1b[32mCURRENT SPONSOR\x1b[0m', `account! Otherwise, transactions cannot be sponsored.`,);
         });
     });
