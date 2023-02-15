@@ -26,14 +26,10 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
 
     const RESET_SECRET = process.env.RESET_SECRET || 'password';
 
-    const corsOptions = {
-        origin: '*'
-    }
-    // This should already be declared in your API file
-    app.use(cors(corsOptions));
+    app.use(cors());
     app.options('*', cors());
-
-    app.use(express.json(), express.urlencoded({ extended: false }));
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
 
     app.use((request, response, next) => {
         request.ipaddress = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
