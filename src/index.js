@@ -26,8 +26,14 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
 
     const RESET_SECRET = process.env.RESET_SECRET || 'password';
 
-    app.use(cors());
-    app.options('*', cors());
+    // app.use(cors());
+    const corsOptions = {
+        origin: '*',
+        credentials: true,            //access-control-allow-credentials:true
+        optionSuccessStatus: 200,
+    }
+    app.use(cors(corsOptions)) // Use this after the variable declaration
+    // app.options('*', cors());
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
 
