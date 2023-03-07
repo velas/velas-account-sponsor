@@ -6,7 +6,6 @@
   "dependencies": {
     "@velas/web3": "0.1.5",
     "babel-cli": "^6.26.0",
-    "babel-node": "^0.0.1-security",
     "babel-preset-env": "^1.7.0",
     "body-parser": "^1.19.0",
     "bs58": "^4.0.1",

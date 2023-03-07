@@ -26,7 +26,7 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
 
     const RESET_SECRET = process.env.RESET_SECRET || 'password';
 
-    // app.use(cors());
+    app.use(cors());
     const corsOptions = {
         origin: '*',
         credentials: true,            //access-control-allow-credentials:true
