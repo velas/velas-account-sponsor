@@ -22,7 +22,7 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
     const bodyParser = require('body-parser');
     const app = express();
     const cors = require('cors')
-    const port = 3001;
+    const port = 443;
 
     const RESET_SECRET = process.env.RESET_SECRET || 'password';
 
