@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 
+import pkg from '../package.json';
 import { getSponsorAccount, getConnection, csrf } from './functions';
 import { transactionsHendler, historyHendler } from './hendlers';
 
@@ -34,6 +35,13 @@ if (!process.env.SPONSOR_PRIVATE || !process.env.NETWORK_HOST || !process.env.VE
     app.use((request, response, next) => {
         request.ipaddress = request.headers['x-forwarded-for'] || request.socket.remoteAddress;
         next();
+    });
+
+	app.get('/info', async (request, response) => {
+        response.send({
+			version: pkg.version,
+			velasWeb3: pkg.dependencies["@velas/web3"],
+		});
     });
 
     app.get('/limits', async (request, response) => {
