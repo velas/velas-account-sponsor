@@ -10,7 +10,7 @@ env:
 jobs:
   docker-build:
     name: Build and push
-    runs-on:  testnet-services
+    runs-on:  monster-builder
     outputs:
       repository: ${{ steps.build.outputs.repository }}
       image_tag: ${{ steps.build.outputs.image_tag }}
@@ -27,7 +27,7 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
   deploy:
     name: Deploy via Helmfile
-    runs-on: testnet-services
+    runs-on: testnet-deploy
     needs: docker-build
     steps:
       - name: Check out velas-infra
